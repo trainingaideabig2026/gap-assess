@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill Check Companion</title>
+<style>
+  :root{
+    --bg:#f6f8fb; --card:#ffffff; --ink:#3a4552; --soft:#6a7889;
+    --accent:#7a9ec4; --accent-dark:#5d84ab; --lav:#a9a4d9; --peach:#f2c9a0;
+    --line:#e4eaf0; --chip:#eef3f8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.6; padding:32px 16px 64px;
+  }
+  .wrap{max-width:880px;margin:0 auto}
+  header{text-align:center;margin-bottom:36px}
+  header h1{font-size:1.9rem;color:var(--accent-dark);font-weight:600}
+  header p{color:var(--soft);margin-top:6px;max-width:520px;margin-inline:auto}
+  section{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:28px;margin-bottom:24px;box-shadow:0 2px 8px rgba(70,100,140,.06);
+  }
+  .badge{
+    display:inline-block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+    background:var(--chip);color:var(--accent-dark);border-radius:999px;padding:4px 12px;margin-bottom:10px;font-weight:600;
+  }
+  section h2{font-size:1.25rem;font-weight:600;margin-bottom:4px}
+  section .sub{color:var(--soft);font-size:.92rem;margin-bottom:20px}
+  label{display:block;font-weight:600;font-size:.92rem;margin:16px 0 6px}
+  .hint{color:var(--soft);font-weight:400;font-size:.82rem}
+  input[type=text],select,textarea{
+    width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;
+    font:inherit;color:var(--ink);background:#f9fafc;
+  }
+  textarea{resize:vertical;min-height:64px}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+  .confidence{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .confidence button{
+    border:1px solid var(--line);background:#f9fafc;border-radius:999px;
+    padding:8px 16px;font:inherit;cursor:pointer;color:var(--ink);
+  }
+  .confidence button.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn{
+    display:inline-block;border:none;border-radius:10px;padding:12px 24px;
+    font:inherit;font-weight:600;cursor:pointer;margin-top:20px;
+  }
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-dark)}
+  .btn-ghost{background:var(--chip);color:var(--accent-dark);padding:8px 16px;font-size:.88rem}
+  /* gap summary */
+  .gap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+  .gap-card{border:1px solid var(--line);border-radius:12px;padding:18px;background:#f9fafc}
+  .gap-card h3{font-size:.98rem;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .dot{width:10px;height:10px;border-radius:50%;flex:none}
+  .gap-card ul{list-style:none;margin-top:6px}
+  .gap-card li{font-size:.88rem;padding:4px 0;color:var(--soft)}
+  .readiness{margin-top:12px;font-size:.85rem;padding:8px 12px;border-radius:8px;background:var(--chip);color:var(--accent-dark)}
+  .bar{height:8px;background:#e7ecf2;border-radius:999px;margin-top:10px;overflow:hidden}
+  .bar span{display:block;height:100%;background:var(--accent);border-radius:999px;transition:width .6s}
+  /* courses */
+  .course{border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:14px;background:#f9fafc;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}
+  .course h3{font-size:1rem;margin-bottom:2px}
+  .course .meta{color:var(--soft);font-size:.85rem}
+  .course .why{font-size:.85rem;color:var(--soft);margin-top:6px;font-style:italic}
+  .interest{border:1px solid var(--accent);background:#fff;color:var(--accent-dark);border-radius:999px;padding:8px 18px;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap}
+  .interest.on{background:var(--lav);border-color:var(--lav);color:#fff}
+  .note{font-size:.8rem;color:var(--soft);margin-top:8px}
+  .example-note{background:#fdf6ee;border:1px solid #f0e2cf;border-radius:12px;padding:14px 18px;font-size:.88rem;color:#8a6d45;margin-bottom:24px}
+  .hidden{display:none}
+  @media (max-width:600px){section{padding:20px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🌱 Skill Check Companion</h1>
+    <p>A friendly self-check to help you see your strengths, spot possible gaps, and find courses you might enjoy. Everything stays on this page — nothing is saved.</p>
+  </header>
+
+  <div class="example-note">✨ This page starts with sample check-ins for colleagues in Malaysia so you can see how it works. Replace them with your own answers anytime — nothing is stored.</div>
+
+  <!-- 1. MY CHECK-IN -->
+  <section id="checkin">
+    <span class="badge">Step 1 · My check-in</span>
+    <h2>Tell us a little about your work</h2>
+    <p class="sub">A few simple questions so the summary below can reflect your situation.</p>
+
+    <label for="nameInput">Your name or nickname</label>
+    <input type="text" id="nameInput" placeholder="e.g. Aina from Accounts">
+
+    <label for="roleInput">What is your role? <span class="hint">(job title or main duty)</span></label>
+    <input type="text" id="roleInput" placeholder="e.g. Customer service executive, Data entry clerk, Junior designer">
+
+    <label>How confident do you feel in your current role?</label>
+    <div class="confidence" id="confidenceGroup">
+      <button data-v="Just starting out">🌱 Just starting out</button>
+      <button data-v="Getting comfortable">🌤 Getting comfortable</button>
+      <button data-v="Fairly confident">☀ Fairly confident</button>
+      <button data-v="Very confident">💪 Very confident</button>
+    </div>
+
+    <label for="improveInput">What would you like to improve? <span class="hint">(one or two things are fine)</span></label>
+    <textarea id="improveInput" placeholder="e.g. I want to get better with Excel formulas and speaking up in meetings"></textarea>
+
+    <button class="btn btn-primary" id="submitBtn">Show my skill gap summary →</button>
+    <p class="note">Sample entries below are examples only — they are pre-filled colleagues, not real people.</p>
+  </section>
+
+  <!-- 2. SKILL GAP VIEW -->
+  <section id="gapview" class="hidden">
+    <span class="badge">Step 2 · Skill gap view</span>
+    <h2 id="gapTitle">Your skill gap summary</h2>
+    <p class="sub">A gentle snapshot of where you may want some support. It is a guide, not a score.</p>
+
+    <div class="gap-grid" id="gapGrid"></div>
+
+    <button class="btn btn-ghost" id="resetBtn">↺ Start a fresh check-in</button>
+  </section>
+
+  <!-- 3. COURSE SUGGESTIONS -->
+  <section id="courses" class="hidden">
+    <span class="badge">Step 3 · Course suggestions</span>
+    <h2>Courses you might find helpful</h2>
+    <p class="sub">Ideas picked to match what you shared. Tap “I’m interested” on anything that appeals.</p>
+
+    <div id="courseList"></div>
+    <p class="note" id="interestNote">These are example course themes for inspiration — not live listings, prices or ratings.</p>
+  </section>
+</div>
+
+<script>
+window.onerror=function(m,s,l,c,e){document.title='ERR: '+m+' @'+l+':'+c;};
+// ---- sample entries shown on first load (Malaysia-specific, made up) ----
+const SAMPLES = [
+  { name:"Aina (Accounts Executive, Shah Alam)", role:"Accounts executive", confidence:"Getting comfortable",
+    improve:"Excel pivot tables and confidence when presenting monthly reports",
+    gaps:{
+      tech:["Advanced Excel & pivot tables","Basic data visualisation","Accounting software shortcuts"],
+      soft:["Presenting to small groups","Explaining numbers in plain language"],
+      job:["Month-end reporting workflow","Understanding e-Invoicing requirements (LHDN)"]},
+    readiness:"You know the daily routine well. A short Excel course plus a practice presentation could make reporting week feel much lighter.",
+    courses:[
+      {t:"Everyday Excel for Finance Teams", d:"Pivot tables, lookup formulas and tidy spreadsheets — a practical half-day style workshop theme.", why:"Matches your interest in pivot tables and reporting."},
+      {t:"Presenting Numbers with Confidence", d:"Turning figures into a short, clear story for meetings.", why:"Supports your goal of speaking up in report reviews."},
+      {t:"Malaysian e-Invoicing Basics (sample topic)", d:"A plain-language overview of the LHDN e-Invoicing rollout for admin staff.", why:"A job-skill area that appeared in your check-in."}
+    ]},
+  { name:"Wei Jian (IT Support, Penang)", role:"IT support technician", confidence:"Fairly confident",
+    improve:"Networking basics and handling angry customers more calmly",
+    gaps:{
+      tech:["Networking fundamentals (TCP/IP, Wi-Fi troubleshooting)","Ticketing system reporting"],
+      soft:["De-escalating frustrated users","Active listening"],
+      job:["Documenting fixes for the team wiki","Asset management process"]},
+    readiness:"Solid hands-on skills already. The likely gap is communication under pressure — small, learnable and worth practising.",
+    courses:[
+      {t:"Networking Foundations for Support Staff", d:"IP addressing, common Wi-Fi issues and a calm troubleshooting routine.", why:"Directly supports your networking goal."},
+      {t:"Calm Conversations with Upset Customers", d:"Simple phrases and steps to de-escalate and stay steady.", why:"Matches the customer-handling improvement you mentioned."},
+      {t:"Writing Useful IT Documentation", d:"Turning fixes into short guides your teammates can reuse.", why:"A job-skill gap from your check-in."}
+    ]},
+  { name:"Nurul (HR Admin, Johor Bahru)", role:"HR administrative assistant", confidence:"Just starting out",
+    improve:"Everything feels new — mostly organisation skills and payroll basics",
+    gaps:{
+      tech:["Spreadsheet basics","Using HR systems confidently"],
+      soft:["Prioritising when everything feels urgent","Asking for help early"],
+      job:["Payroll & EPF/SOCSO basics","Onboarding checklist management"]},
+    readiness:"Early days, and that is completely okay. Focus on one spreadsheet habit and one payroll topic at a time.",
+    courses:[
+      {t:"Spreadsheets from Scratch", d:"Sorting, filtering and simple formulas — no experience needed.", why:"A gentle start for your tech gap."},
+      {t:"Payroll & Statutory Contributions in Malaysia (sample topic)", d:"An overview of EPF, SOCSO and PCB for new admins.", why:"Builds the job knowledge you asked about."},
+      {t:"Managing a Busy Inbox & To-Do List", d:"Simple prioritising habits for admin roles.", why:"Helps when everything feels urgent."}
+    ]}
+];
+
+// elements
+const nameI=document.getElementById('nameInput'), roleI=document.getElementById('roleInput'),
+      improveI=document.getElementById('improveInput'),
+      confGroup=document.getElementById('confidenceGroup'),
+      gapview=document.getElementById('gapview'), gapGrid=document.getElementById('gapGrid'),
+      gapTitle=document.getElementById('gapTitle'),
+      coursesSec=document.getElementById('courses'), courseList=document.getElementById('courseList'),
+      interestNote=document.getElementById('interestNote');
+
+let confidence=null;
+
+// confidence picker
+confGroup.addEventListener('click',e=>{
+  if(e.target.tagName!=='BUTTON')return;
+  confGroup.querySelectorAll('button').forEach(b=>b.classList.remove('sel'));
+  e.target.classList.add('sel');
+  confidence=e.target.dataset.v;
+});
+
+// ---- prefill first sample so page never opens blank ----
+function fillSample(s){
+  nameI.value=s.name; roleI.value=s.role; improveI.value=s.improve;
+  confidence=s.confidence;
+  confGroup.querySelectorAll('button').forEach(b=>b.classList.toggle('sel',b.dataset.v===s.confidence));
+  renderGaps({...s, tech:s.gaps.tech, soft:s.gaps.soft, job:s.gaps.job}); renderCourses(s);
+}
+fillSample(SAMPLES[0]);
+
+// sample "browse examples" quick chips
+const chips=document.createElement('div');
+chips.innerHTML='<label style="margin-top:20px">Or peek at a sample colleague’s check-in:</label>';
+const chipRow=document.createElement('div'); chipRow.className='confidence';
+SAMPLES.forEach((s,i)=>{
+  const b=document.createElement('button'); b.textContent=s.name.split('(')[0].trim(); b.type='button';
+  b.onclick=()=>{fillSample(s); gapview.classList.remove('hidden'); coursesSec.classList.remove('hidden');};
+  chipRow.appendChild(b);
+});
+chips.appendChild(chipRow);
+document.getElementById('checkin').appendChild(chips);
+
+// ---- feature 2: gap summary ----
+function analyse(name,role,conf,improve){
+  const text=(role+' '+improve).toLowerCase();
+  const has=(...w)=>w.some(k=>text.includes(k));
+  // keyword-based gap detection (gentle, not scientific)
+  const tech=[],soft=[],job=[];
+  if(has('excel','spreadsheet','data','report','pivot','system','software','computer','it ','network','coding','design'))
+    tech.push('Hands-on practice with the tools you mentioned','Step-by-step guides for the specific software');
+  else tech.push('Core tools used daily in your role','A short refresher on the main software your team uses');
+  if(has('present','speaking','confiden','communicat','meeting','customer','angry','talk','lead'))
+    soft.push('Communicating your ideas clearly','Staying calm in tricky conversations');
+  else soft.push('Sharing updates confidently in meetings','Giving and receiving feedback kindly');
+  if(has('payroll','invoice','epf','socsO','lhdn','compliance','process','document','onboard','admin'))
+    job.push('Company processes and documentation for your area','Statutory or compliance basics relevant in Malaysia');
+  else job.push('Deeper know-how of your team’s end-to-end workflow','Short cross-training with a senior colleague');
+  const readMap={
+    'Just starting out':'You are early in the journey — pick one small course and build from there. Small wins first.',
+    'Getting comfortable':'Your daily routine is taking shape. Focused short courses could turn “comfortable” into “confident”.',
+    'Fairly confident':'Strong foundation. The gaps below are refinements — ideal for bite-sized learning.',
+    'Very confident':'You are in a great place. Consider courses that deepen expertise or prepare you to mentor others.'
+  };
+  const readiness=readMap[conf]||readMap['Getting comfortable'];
+  return {name,role,conf,improve,tech,soft,job,readiness};
+}
+
+function renderGaps(data){
+  gapTitle.textContent = data.name ? `${data.name.split('(')[0].trim()}’s skill gap summary` : 'Your skill gap summary';
+  const areas=[
+    {title:'💻 Tech skills', items:data.tech, color:'#7a9ec4'},
+    {title:'🤝 Soft skills', items:data.soft, color:'#a9a4d9'},
+    {title:'🗂 Job skills', items:data.job, color:'#f2c9a0'}
+  ];
+  gapGrid.innerHTML='';
+  areas.forEach(a=>{
+    const c=document.createElement('div'); c.className='gap-card';
+    c.innerHTML=`<h3><span class="dot" style="background:${a.color}"></span>${a.title}</h3>
+      <ul>${a.items.map(i=>`<li>· ${i}</li>`).join('')}</ul>
+      <div class="readiness">💡 ${data.readiness}</div>`;
+    gapGrid.appendChild(c);
+  });
+  gapview.classList.remove('hidden');
+  gapview.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function renderCourses(data){
+  courseList.innerHTML='';
+  data.courses.forEach(c=>{
+    const row=document.createElement('div'); row.className='course';
+    row.innerHTML=`<div><h3>${c.t}</h3><div class="meta">${c.d}</div><div class="why">Why this one: ${c.why}</div></div>`;
+    const btn=document.createElement('button'); btn.className='interest'; btn.textContent='🤍 I’m interested';
+    btn.onclick=()=>{
+      const was=btn.classList.contains('on');
+      courseList.querySelectorAll('.interest').forEach(b=>{b.classList.remove('on');b.textContent='🤍 I’m interested';});
+      if(!was){btn.classList.add('on');btn.textContent='💚 Interested — noted!';
+        interestNote.textContent='Nice choice! In a real workplace this would be shared with your HR/L&D team. Nothing is saved here — it is just for you.';}
+      else interestNote.textContent='These are example course themes for inspiration — not live listings, prices or ratings.';
+    };
+    row.appendChild(btn);
+    courseList.appendChild(row);
+  });
+  coursesSec.classList.remove('hidden');
+}
+
+// ---- feature 1 & 2 wiring: submit ----
+document.getElementById('submitBtn').onclick=()=>{
+  const role=roleI.value.trim();
+  if(!role){roleI.focus(); roleI.placeholder='Please add your role so the summary can help you 🙂'; return;}
+  const improve=improveI.value.trim()||'growing generally in the role';
+  const conf=confidence||'Getting comfortable';
+  const data=analyse(nameI.value.trim(),role,conf,improve);
+  renderGaps(data);
+  // course suggestions react to answers
+  const wantTech=has(improve,'excel','data','software','system','network','computer','spreadsheet','design','it');
+  const wantSoft=has(improve,'present','confiden','communicat','speaking','customer','meeting','lead','calm');
+  const wantJob=has(improve,'payroll','invoice','process','document','onboard','admin','compliance','epf','socsO');
+  const pool=[
+    {t:'Microsoft Excel Essentials & Beyond', d:'Formulas, tidy data and simple charts for everyday work.', why: wantTech?'You mentioned tools like this in your check-in.':'A dependable skill for almost any role.'},
+    {t:'Confident Communication at Work', d:'Speaking up in meetings and presenting simply and clearly.', why: wantSoft?'This matches the improvement goal you shared.':'Useful for sharing ideas with your team.'},
+    {t:'Workplace Writing & Email Etiquette', d:'Short, clear messages that get quick replies.', why:'A small skill that saves time every day.'},
+    {t:'Malaysian Workplace Compliance Basics (sample topic)', d:'A friendly overview of common statutory and HR processes.', why: wantJob?'Relates to the job knowledge area you raised.':'Good background awareness for any employee.'}
+  ];
+  const picked=[pool[0],pool[1]];
+  if(wantJob) picked.push(pool[3]); else picked.push(pool[2]);
+  renderCourses({courses:picked});
+};
+
+function has(s,...keys){const t=s.toLowerCase();return keys.some(k=>t.includes(k));}
+
+// reset
+document.getElementById('resetBtn').onclick=()=>{
+  gapview.classList.add('hidden'); coursesSec.classList.add('hidden');
+  nameI.value=''; roleI.value=''; improveI.value=''; confidence=null;
+  confGroup.querySelectorAll('button').forEach(b=>b.classList.remove('sel'));
+  interestNote.textContent='These are example course themes for inspiration — not live listings, prices or ratings.';
+  document.getElementById('checkin').scrollIntoView({behavior:'smooth'});
+};
+</script>
+</body>
+</html>
